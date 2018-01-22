@@ -1,0 +1,23 @@
+---
+title: "HelloWorld"
+author: "Kendall Weistroffer"
+date: "January 9, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Comment About Me
+My name is Kendall and I am a donut aficionado.
+But seriously, I am a current Masters student in the Computer Science 4+1 degree program. I am excited to take this class to further my knowledge about data science and learn the R programming language. I am planning to enroll in multiple additional ML courses, either as an Independent Study or on my own time. Upon graduation I will be moving to Boston to work as a Cyber Analytics Developer at a certain research lab at a certain institute of technology I believe you are quite familiar with. ;) 
+
+
+```{r}
+
+a <- 1
+b <- 2
+c <- a+b
+print(c)
+
+```
