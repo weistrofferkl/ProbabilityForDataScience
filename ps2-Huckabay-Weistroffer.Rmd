@@ -71,31 +71,24 @@ d=1/sqrt(50*0.4*(1-0.4))
 #random variable
 
 X<-function(x){(x-50*0.4)/(sqrt(50*0.4*(1-0.4)))}
+pNormfun<-function(x, d){
+  pnorm(x+d/2) - pnorm(x-d/2)
+}
 var1 <- X(0:50)
+var2 <- (0:50)
 probVar1 <- dbinom(0:50, 50, .4)
 var1DF <- data.frame(value = var1, prob = probVar1)
-g <- ggplot(var1DF, aes(x = value, y = prob)) + geom_point()
+g <- ggplot(var1DF, aes(x = value, y = prob)) + geom_point(aes(colour="red"))
 g
 
 #apply pnorm to each value in var1 +- d/2
 #loop through in vector form, apply pnorm to a vector
 #feed pnorm a vector as an x argument, plot points 
 
-
-
-# 
-# #filtering function to get what's equal to d
-#findD<-function(x){if (x == d) return(TRUE) else return(FALSE)}
-
-#initialize the y's and the vector of x's applying the specified random variable function
-# vecY<-rbinom(100000, 50, 0.4)
-# vecX<-sapply(vecY, X)
-# frame<-data.frame(vecX)
-# 
-# dStruct<-Filter(findD, vecX)
-# 
-# 
-# hist(vecX)
+pNormVec<-sapply(var2, pNormfun, d=d)
+pNormDat<-data.frame(pNormVec)
+g<- ggplot(pNormDat, aes(x = var1 , y = pNormVec)) + geom_point()
+g
 
 
 ```
