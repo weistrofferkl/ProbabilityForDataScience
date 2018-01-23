@@ -86,7 +86,7 @@ g
 #loop through in vector form, apply pnorm to a vector
 #feed pnorm a vector as an x argument, plot points 
 
-pNormVec<-sapply(var2, pNormfun, d=d)
+pNormVec<-sapply(var1, pNormfun, d=d)
 pNormDat<-data.frame(pNormVec)
 g<- ggplot(pNormDat, aes(x = var1 , y = pNormVec)) + geom_point()
 g
