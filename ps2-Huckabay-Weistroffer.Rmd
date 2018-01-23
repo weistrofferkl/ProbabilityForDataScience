@@ -49,7 +49,13 @@ The histogram approximates a normal distribution (bell-shaped curve). Half of th
 
 ```{r}
 NormPlot= rnorm(100000, 20, sqrt(50 *0.4*(1-0.4)))
-hist(NormPlot)
+#hist(NormPlot)+geom_histogram(aes(y = ..density..),binwidth=1)
+NormPlot <- data.frame(value = NormPlot)
+
+g<- ggplot(NormPlot, aes(x=value)) +
+        geom_histogram(aes(y = ..density..),binwidth=1) +
+        stat_function(fun = dnorm, colour = "red",args = list(mean =20, sd = sqrt(50*.4*(1-.4))))
+g
 ```
 
 Both of these historgrams have a bell-curve shape, but this normal distribution is steeper due to a standard deviation that is lower relative to the mean.  
@@ -61,21 +67,34 @@ Both of these historgrams have a bell-curve shape, but this normal distribution 
 #set d
 d=1/sqrt(50*0.4*(1-0.4))
 
-#random variable 
-X<-function(x){(x-50*0.4)/(sqrt(50*0.4*(1-0.4)))}
+#random variable
 
-#filtering function to get what's equal to d
-findD<-function(x){if (x == d) return(TRUE) else return(FALSE)}
+X<-function(x){(x-50*0.4)/(sqrt(50*0.4*(1-0.4)))}
+var1 <- X(0:50)
+probVar1 <- dbinom(0:50, 50, .4)
+var1DF <- data.frame(value = var1, prob = probVar1)
+g <- ggplot(var1DF, aes(x = value, y = prob)) + geom_point()
+g
+
+#apply pnorm to each value in var1 +- d/2
+#loop through in vector form, apply pnorm to a vector
+#feed pnorm a vector as an x argument, plot points 
+
+
+
+# 
+# #filtering function to get what's equal to d
+#findD<-function(x){if (x == d) return(TRUE) else return(FALSE)}
 
 #initialize the y's and the vector of x's applying the specified random variable function
-vecY<-rbinom(100000, 50, 0.4)
-vecX<-sapply(vecY, X)
-frame<-data.frame(vecX)
-
-dStruct<-Filter(findD, vecX)
-
-
-hist(vecX)
+# vecY<-rbinom(100000, 50, 0.4)
+# vecX<-sapply(vecY, X)
+# frame<-data.frame(vecX)
+# 
+# dStruct<-Filter(findD, vecX)
+# 
+# 
+# hist(vecX)
 
 
 ```
