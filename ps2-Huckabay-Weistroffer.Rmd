@@ -1,3 +1,4 @@
+
 ---
 title: "Problem Set 2"
 author: "Ariel Huckabay"
@@ -111,5 +112,4 @@ g
 ```{r}
 
 ```
-
 
