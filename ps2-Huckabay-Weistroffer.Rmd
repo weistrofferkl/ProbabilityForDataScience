@@ -76,7 +76,6 @@ pNormfun<-function(x, d){
   abs(pnorm(x+d/2) - pnorm(x-d/2))
 }
 var1 <- X(0:50)
-var2 <- (0:50)
 probVar1 <- dbinom(0:50, 50, .4)
 var1DF <- data.frame(value = var1, prob = probVar1)
 g <- ggplot(var1DF, aes(x = value, y = prob)) + geom_point(aes(colour="red"))
@@ -100,6 +99,15 @@ g
 ```{r}
 #Repeat #4,change up parameters in the binomial dist. and use same #4 visualizatios but with s = size, p = probabilitiy 
 # d = defined in terms of s and p (see equation above), use same type of plot in #4, and say what you think about how they compare
+
+
+X2<-function(y, s, p){(y-s/p)/sqrt(s*p*(1-p))}
+#first pair
+s<-50
+p<-0.5
+VecX2<-X2(rbinom(10000, s, p), s, p)
+hist(VecX2)
+
 ```
 
 6. (4441 only) Recall the normal probabilities from question 4: the x values are (z-50\*.4)/sqrt(50\*.4\*(1-.4)) for the integers z in {0,1,2,3,...50}. The value d is defined by d=1/sqrt(50\*.4\*(1-.4)), For each x value, the point (x,y) where y is probability that a draw from the standard normal distribution lies between x-d/2 and x+d/2 was plotted. If you plot the density of the standard normal distribution on the same plot, it appears to be of a similar shape but different vertical scale. What can you multiply the standard normal density function by to make the scales comparable? Please give a formula in terms of s and p and explain your reasoning.(10 points)
