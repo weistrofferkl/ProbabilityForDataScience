@@ -1,0 +1,229 @@
+---
+title: "Problem Set 3"
+author: "C. Durso"
+date: '`r format(Sys.time,"%B %d, %Y")`'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(knitr)
+```
+
+## Introduction
+
+Please complete the following tasks regarding the data in R. Please generate a solution document in R markdown and upload the .Rmd document and a rendered  .doc, .docx, or .pdf document.  Your work should be based  on the data's being in the same folder as the .Rmd file. Please turn in your work on Canvas. Your solution document should have your answers to the questions and should display the requested plots.
+
+These questions were rendered in R markdown through RStudio (<https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>, <http://rmarkdown.rstudio.com> ).
+
+## Part 1
+
+### Question 1
+
+In this question, we return to ps1_data.csv. Please read in ps1_data.csv and find the values of m and b that minimize the sum of the square differences (FTOTINC-(m*FAMSIZE+b))^2 over all the families in the sample. In this context, the hhwt values are typically not used because each sampled family gives information only about its relation between FAMSIZE and FTOTINC. Please use the analytic formula derived in class and plot the least squares best fit line on a scatterplot of the data points. You may find geom_jitter helpful. That geometry also accepts an alpha parameter.
+
+
+
+```{r}
+#read in problem set 1 dat
+dat<-read.csv("ps1_data.csv")
+
+#minimize sum
+#to think of b as constant, we will make b 5
+#squareVarM<-function(m){return (sum((dat$FTOTINC-(m*dat$FAMSIZE + 4))^2))}
+
+#to think of m as constant, we will make m 5
+#squareVarB<-function(b){return (sum((dat$FTOTINC-(4*dat$FAMSIZE + b))^2))}
+
+#find minima
+#minimumM<-optimize(squareVarM, c(-max(dat$FTOTINC),max(dat$FTOTINC)), maximum=FALSE)
+#minimumB<-optimize(squareVarB, c(-max(dat$FTOTINC),max(dat$FTOTINC)), maximum=FALSE)
+n <- nrow(dat)
+yBar <- mean(dat$FTOTINC)
+xBar <- mean(dat$FAMSIZE)
+
+mNum <- (1/n) * sum((dat$FTOTINC * dat$FAMSIZE) - (yBar * xBar))
+mDenom <- (1/n) * sum((dat$FAMSIZE)^2 - (xBar^2))
+
+mFinal <- mNum/mDenom
+bFinal <- yBar - (mFinal*xBar)
+
+#store the values of m and b
+#finalM<-minimumM[1] #Find way to access these
+#finalB<-minimumB[1]
+
+#hatch the plot
+g<-ggplot(dat, aes(x=FAMSIZE, y=FTOTINC)) + geom_point(position = "jitter")
+g<-g+geom_abline(slope= mFinal, intercept = bFinal)
+g
+
+```
+
+
+
+### Question 2
+
+2a. What change in income is associated with each additional person according to the linear model?
+
+```{r}
+# According to the linear model, the income for each family should increase by the value of m for each additional family member
+```
+
+2.b. Plot unweighted mean income in each FAMSIZE. How do they compare to the fitted line?
+
+```{r}
+vecFam<-as.vector("numeric")
+for(j in 1:max(dat$FAMSIZE)){
+  count = 0
+  sum = 0
+  for(i in 1:nrow(dat)){
+    if(dat$FAMSIZE[i] == j){
+      count = count + 1
+      sum = sum + dat$FTOTINC[i]
+    }
+  }
+  if(j==10 || j == 13){
+    sum = 0
+    count = 1
+  }
+  vecFam[j] = sum/count
+}
+vecPoints<-data.frame(vecFam)
+g1<-ggplot(vecPoints, aes(x= (1:14), y=vecFam))+geom_point()
+g1
+
+
+```
+
+
+### Question 3
+
+If the incomes for 2 person families follow a Normal distribution, what are the maximum likelihood values of $\mu$ and $\sigma^2$? Is the histogram of the incomes consistent with the Normal distribution with this value for the mean and $\sqrt{\sigma^2}$ for sd?
+
+```{r}
+
+#Grab incomes of 2-Person Families
+Total2Person <- (dat$FTOTINC[dat$FAMSIZE == 2]) 
+
+#Compute values for mu and sigma^2
+n <- length(Total2Person)
+xBar2Person <- mean(Total2Person)
+sigmaDen <- sum((Total2Person - xBar2Person)^2)
+sigmaSquared <- sigmaDen/n
+mu <- xBar2Person
+
+#Print output for mu and sigma^2
+cat("Mu:", mu)
+cat(" Sigma Squared:", sigmaSquared)
+
+#Compute sd for graph comparisons
+sdTest <- sqrt(sigmaSquared)
+
+#Plot
+TwoPersonIncome <- data.frame(Total2Person)
+g3 <- ggplot(TwoPersonIncome)+geom_histogram(aes(x=Total2Person, y = ..density..)) +
+  stat_function(fun = dnorm, n = n, args = list(mean = xBar2Person, sd = sdTest), color = "red")
+g3
+
+#plot historam of observed data, restrict to 2-person families, y = ..density..., do density histogram
+#don't use hhwt
+```
+
+
+### Question 4
+
+Create 10,000 samples of size 10 from the standard Normal distribution and calculate the maximum likelihood values of $\mu$ and $\sigma$ for each. Compute the mean of the $\mu$s and the mean of the $\sigma$s. What proportion of the $\mu$s are less than or equal to 0? What proportion of the $\sigma$s are less than or equal to 1?
+
+```{r}
+
+#use rnorm
+#lapply
+
+#Create 10,000 samples
+nSamples <- 10000
+
+#Create normal distributions of size 10 for each sample:
+listSamples <- lapply(1:nSamples, function(x) rnorm(n=10))
+
+#Function to compute sigma:
+maxLSigmas<-function(x){
+  sampleN <- length(x)
+  sampleMu <- mean(x)
+  sampleSigmaDen <- sum((x - sampleMu)^2)
+  sampleSigmaSquared <- sampleSigmaDen/sampleN
+  return (sampleSigmaSquared)
+  
+}
+
+#Function to compute mu:
+maxLMus<- function(x){
+  sampleMu <- mean(x)
+  return (sampleMu)
+}
+
+#Apply functions for Mu and Sigma:
+sigmaList <- sapply(listSamples, maxLSigmas)
+muList <- sapply(listSamples, maxLMus)
+
+#Print out the mean of Mu and the mean of Sigma:
+meanMu <-mean(muList)
+cat("Mean Mu:", meanMu)
+meanSigma <- mean (sigmaList)
+cat("\nMean Sigma:", meanSigma)
+
+
+#Compute number of mus and sigmas less than or equal to 0:
+negMus <- 0
+negSigmas <- 0
+for(i in 1:length(muList)){
+  if(muList[i] <= 0){
+    negMus = negMus + 1 
+  }
+  if(sigmaList[i] <= 0){
+    negSigmas = negSigmas + 1
+  }
+  
+}
+
+#Calculate the proportions:
+proportionMu <- negMus/length(muList)
+proportionSigma <- negSigmas/length(sigmaList)
+
+cat("\nNegitive Mus:", negMus, " Proportion:", proportionMu)
+cat("\nNegitive Sigmas:", negSigmas, " Proportion:", proportionSigma)
+
+
+
+
+
+
+
+```
+
+### Question 5
+
+The exponential distributions are a one parameter family of continuous distributions, $Exp(\lambda)$. Given $\lambda$, the sample space is $[0,\infty)$ and the probability density function is $f(x)=\lambda\exp(-\lambda x)$. Thus if $x_1...x_n$ are $n$ independent draws from an exponential distribution with parameter $\lambda$, the likelihood function of this sample is $\prod_{i=1}^{n}\lambda\exp(-\lambda x_{i})$. What is the maximum likelihood value of $\lambda$ as a function of $x_1...x_n$? That is, given $x_1...x_n$, what value of $\lambda$ maximizes $\prod_{i=1}^{n}\lambda\exp(-\lambda x_{i})$? 
+
+
+-NOT AN R QUESTION!
+-DO A DERIVATION ON PAPER AND PUT IT IN HEREEEEEEE
+
+### Question 6 (4441 only)
+
+Projection view of regression: Consider the vectors $\overrightarrow{FTOTINC}$ and  $\overrightarrow{FAMSIZE}$  from Question 1 and the vector $\vec{1}$ of the same length in which each entry is $1$. Construct the matrix $\mathbf{X}$  that has $\vec{1}$ as its first column and $\overrightarrow{FAMSIZE}$  as its second column. 
+
+Note that $\overrightarrow{FTOTINC}$  is not in the span of $\vec{1}$  and $\overrightarrow{FAMSIZE}$. That is, there is no vector $\vec{b}$  of length 2 such that $\overrightarrow{FTOTINC}=\mathbf{X}\vec{b}$. However, $\overrightarrow{FTOTINC}$  can be written as a sum of a vector $\mathbf{X}\vec{b}$  in the span of $\vec{1}$ and $\overrightarrow{FAMSIZE}$ and a vector $\vec{e}$  orthogonal to both $\vec{1}$  and $\overrightarrow{FAMSIZE}$. Thus $\mathbf{X}^T\overrightarrow{FTOTINC}=\mathbf{X}^T(\mathbf{X}\vec{b}+\vec{e})$ 
+
+6.a. Use the fact above, with the specification the vector $\vec{e}$ is orthogonal to both $\vec{1}$ and $\overrightarrow{FAMSIZE}$, to solve for $\vec{b}$ in terms of $\mathbf{X}$ and $\overrightarrow{FTOTINC}$ algebraically.
+
+-LINEAR ALGEBRA, NO NEED TO SOLVE IN R
+
+6.b. Carry out the calcuation for $\vec{b}$ in 6.a. Compare $\vec{b}$ to your answers for Question 1. Note that %*% is the symbol for matrix multiplication in R, and the inverse of a matrix M can be calculated using the function call solve(M).
+-DO THIS IN R, CARRY OUT CALCULATION THAT WE FOUND IN 6A
+
+```{r}
+```
