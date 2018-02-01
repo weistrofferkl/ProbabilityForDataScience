@@ -86,10 +86,7 @@ for(j in 1:max(dat$FAMSIZE)){
       sum = sum + dat$FTOTINC[i]
     }
   }
-  if(j==10 || j == 13){
-    sum = 0
-    count = 1
-  }
+ 
   vecFam[j] = sum/count
 }
 vecPoints<-data.frame(vecFam)
