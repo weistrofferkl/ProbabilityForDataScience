@@ -1,0 +1,104 @@
+---
+title: "Problem Set 4"
+author: "C. Durso"
+date: '`r format(Sys.time(),"%B %d, %Y")`'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+```
+
+## Introduction
+
+Please complete the following tasks regarding the data in R. Please generate a solution document in R markdown and upload the .Rmd document and a rendered  .doc, .docx, or .pdf document.  Your work should be based  on the data's being in the same folder as the .Rmd file. Please turn in your work on Canvas. Your solution document should have your answers to the questions and should display the requested plots.
+
+These questions were rendered in R markdown through RStudio (<https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>, <http://rmarkdown.rstudio.com> ).
+
+
+## Question 1
+
+The precipitation data in "precipitation_boulder.csv" are precipitation values for Boulder, CO from https://www.esrl.noaa.gov/psd/boulder/Boulder.mm.precip.html. Precipitation includes rain, snow, and hail. Snow/ice water amounts are either directly measured or a ratio of 1/10 applied for inches of snow to water equivalent. 
+
+The code provided below reads in the precipitation data. Most columns are assigned the string class. To make conversion to numeric values correct, the code replaces the value "Tr", for "trace amount" with 0, eliminates all "*"s, makes all columns numeric, and creates one data frame, dat, with all the values in the data, and one data frame, dat.trim, with only those years for which the measurements were all made at a standard site. 
+
+### Question 1, Part 1
+
+Using dat.trim, calculate the mean and sample standard deviation of the year.total precipitation for the fully valid years in the range 1900-1950 and the mean for the fully valid years in the range 2000-2017,
+
+```{r}
+dat<-read.csv("precipitation_boulder.csv",stringsAsFactors = FALSE)
+# Change all characters in the variable names to lower case.
+names(dat)<-str_to_lower(names(dat))
+
+# function to return TRUE if a string vector x contains any entries with an "*".
+any_stars<-function(x){
+  sum(str_detect(x,"\\*"))>0
+}
+
+# Identify the rows in the data with at least 1 "*".
+iffy<-apply(dat,1,any_stars)
+
+# Replace "Tr" with "0"
+dat<-mutate_all(dat,str_replace,"Tr","0")
+dat<-mutate_all(dat,str_replace_all,"\\*","")
+dat<-mutate_all(dat,as.numeric)
+dat$year[iffy]
+dat.trim<-dat[!iffy,]
+```
+
+### Question 1, Part 2
+
+Test the hypothesis that the mean of the annual precipitation in 2000-2017 is consistent with the null hypothesis that the precipitation in these years is a simple random sample from a Normal distribution with mean equal to the sample mean for the years in 1900-1950 and standard deviation equal to the sample standard deviation for the years in 1900-1950..
+
+```{r}
+
+```
+
+### Question 1, Part 3
+
+Under the assumption that the precipitation totals in 2000-2017 are a simple random sample from a Normal distribution with unknown mean and variance equal to 4, please give a 95% confidence interval for the mean.
+
+```{r}
+
+```
+
+### Question 1, Part 4
+
+Now test the hypothesis that precipitation totals in 2000-2017 are a simple random sample from a Normal distribution with mean=18.5 and unknown variance. Note the 95% confidence interval for the mean.
+
+```{r}
+
+```
+### Question 1, part 5
+
+Visually assess the Normality of the annual precipitation values in 2000-2017. Does the distribution of annual precipitation appear to be Normal? 
+Draw 10,000 samples of size 19 from the annual precipitation values in 2000-2017. Do the means of samples of size 19 appear to be Normally distributed?
+Does the t-distribution seem to be a reasonable approximation?
+
+
+```{r}
+
+```
+
+### Question 1, part 6
+
+Use the means from part 5 to give the 95% bootstrap interval for the mean of the 2000-2017 precipitation.
+
+```{r}
+
+```
+
+### Question 2, required for 4441 only.
+
+While plots show that if $X$ is Normally distributed, then $Y=aX+b$ looks Normal as well, we haven't actually show this analytically. If the random variable $X$ is Normally distributed with mean $\mu$ and variance $\sigma^2$, and the random variable $Y$ equals $aX+b$, then the cumulative distribution for $Y$ at $y$ equals the probability that $Y$ is less than or equal to $y$, which can be expressed as an event in the probability space for X. Please write the integral for this event, and use it to show that the density of $Y$ is the density of a Normal random variable. Give the mean and variance of $Y$. Remember $a$ may be negative.
+
+
+
+
+
+
