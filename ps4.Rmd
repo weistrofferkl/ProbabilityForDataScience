@@ -79,14 +79,20 @@ Test the hypothesis that the mean of the annual precipitation in 2000-2017 is co
 ```{r}
 #graph the normal distribution 
 
-nullHyp<-rnorm(length(dat.2017), mean = mean.total.1950, sd = sd.total.1950)
+qqnorm(dat.2017$year.total)
+qqline(dat.2017$year.total)
 
-meanNullHyp <- mean(nullHyp)
-sdNullHyp <- sd(nullHyp)
-cat("Mean of the Null Hypothesis: ",meanNullHyp, "\n")
-cat("SD of the Null Hypothesis: ", sdNullHyp, "\n")
-cat("Mean of the annual precipitation in 2000-2017: ", mean.total.2017, "\n")
-cat("SD of the annual precipitation in 2000-2017: ", sd.total.2017)
+#S-Shape in the qqnorm plot shows non-normailty within our data!
+
+#specific analytic test: qqnorm and qqline?
+# nullHyp<-rnorm(length(dat.2017), mean = mean.total.1950, sd = sd.total.1950)
+# 
+# meanNullHyp <- mean(nullHyp)
+# sdNullHyp <- sd(nullHyp)
+# cat("Mean of the Null Hypothesis: ",meanNullHyp, "\n")
+# cat("SD of the Null Hypothesis: ", sdNullHyp, "\n")
+# cat("Mean of the annual precipitation in 2000-2017: ", mean.total.2017, "\n")
+# cat("SD of the annual precipitation in 2000-2017: ", sd.total.2017)
 
 #mean.total.2017
 #nullFrame <- data.frame(nullHyp)
@@ -103,7 +109,7 @@ Under the assumption that the precipitation totals in 2000-2017 are a simple ran
 
 ```{r}
 
-n = length(dat.2017)
+n = nrow(dat.2017)
 sigma = sqrt(4) #Use variance to find sd
 sem = sigma/sqrt(n) #Standard error of the mean
 
@@ -125,16 +131,17 @@ Now test the hypothesis that precipitation totals in 2000-2017 are a simple rand
 
 ```{r}
 
-n = length(dat.2017)
+n = nrow(dat.2017)
 xbar2 = 18.5 #Given mean
-sampleSD = sd(dat.2017$year.total) #Sample Standard Deviation
+sampleSD = sd(dat.2017$year.total) #Sample Mean
+sampleMean <- mean(dat.2017$year.total)#Sample Standard Deviation
 SE = sampleSD/sqrt(n) #Standard Error Estimate
 cat("Standard Error Estimate: ", SE, "\n")
 
 E = qt(.975, df = n-1)*SE #Margin of Error
 cat("Margin of Error: ", E, "\n")
 cat("Sample SD: ", sampleSD, "\n")
-cat("Confidence Interval: ", xbar2+c(-E, E), "\n\n")
+cat("Confidence Interval: ", sampleMean+c(-E, E), "\n\n")
 
 #An easier, built-in solution, indicates that 18.5 is not the true mean:
 t.test(dat.2017$year.total, mu = xbar2, conf.level = 0.95)
@@ -159,7 +166,7 @@ g
 
 #Draw 10,000 samples of size 19 from annual precipitation values in 2000-2017
 nSamples <- 10000
-listSamples <- lapply(1:nSamples, function(x) sample(length(dat.2017$year.total), size = 19, replace = TRUE))
+listSamples <- lapply(1:nSamples, function(x) sample(dat.2017$year.total, size = 18, replace = TRUE))
 
 grabMeans <- function(x){
   sampleMean <- mean(x)
@@ -175,7 +182,7 @@ g1 <- ggplot(meanFrame)+geom_histogram(aes(x = meanList, y= ..density..))+stat_f
 g1
 
 #Does the t-distribution appear to be a reasonable approximation?
-#Left as exercise for Ariel!
+#Left as exercise for Ariel! This can be answered in a response rather than an R-based answer
 
 ```
 
