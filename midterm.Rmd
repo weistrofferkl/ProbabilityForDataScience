@@ -1,0 +1,111 @@
+---
+title: "Midterm 2018"
+author: "C. Durso"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+Name_____________________________________
+
+## Midterm Exam, COMP 4441, 3441: Probability and Statistics for Data Science
+
+###Due Friday, February 16, 11:59pm
+
+This is an open book, open note exam. You may use any online or printed reference materials, but you are not expected to go beyond what can be deduced in a basic manner from the text and course notes. You may not use responses to questions you pose to other people, online or directly. 
+You may ask the instructor for clarification of questions. Do not ask anyone other than the instructor anything relating to the exam. Using anyone else's help on the exam is a violation of the conditions of the exam, and is cause for action including, but not limited to, a 0 on the exam. It is also a breach of academic trust. (Sorry to sound so nasty, but having this clear is important.)
+
+Please complete the following collection of descriptions of procedures. The first entry has been completed as an example. Each question is worth 20 points.
+
+
+#### 1. Procedure name: Sign test
+
+Data requirements [one, two, or more samples, data type (numeric, ordinal, or categorical), data distribution (Normal, symmetric, non-parametric, etc.), sample size?]: 
+
+As discussed in class, the sign test applies to a single sample of size $n$ of numeric data with positive and negative values.
+
+Formulas for the statistic(s), and p-value, if relevant:
+
+The statistic is the number $k$ of positive values in the sample, considered as a draw from a binomial distribution with size equal to $n$ and probability of success (positive value) equal to $0.5$.
+
+The p-value for the two-sided test is $\sum_{m:f(m,n,0.5)\leq f(k,m,0.5)}f(m,n,0.5)$, the sum of all probabilities of all outcomes with probability less than or equal to that of the observed number of positive values under the binomial distribution with size equal to $n$ and probability of success equal to $0.5$.
+
+Interpretation (Is there a null hypothesis? Associated confidence interval?) :
+
+The null hypothesis is that each observation in the sample is equally likely to be positive or non-positve. If there is neglible probability that an observation equals 0, this is equivalent to the hypothesis that the median of the distribution is equal to 0. No confidence interval was mentioned. 
+
+
+#### 2. Procedure name: One sample z-test
+
+Data requirements [one, two, or more samples, data type (numeric, ordinal, or categorical), data distribution (Normal, symmetric, non-parametric, etc.), sample size?]: 
+
+Formulas for the statistic(s), and p-value, if relevant: 
+
+Interpretation (Is there a null hypothesis? Associated confidence interval?) :
+
+#### 3. Procedure name: One sample Wilcoxon signed rank test
+
+Data requirements [one, two, or more samples, data type (numeric, ordinal, or categorical), data distribution (Normal, symmetric, non-parametric, etc.), sample size?]:
+
+Formulas for the statistic(s), and p-value, if relevant:
+
+Interpretation (Is there a null hypothesis? Associated confidence interval?) : 
+
+#### 4. Procedure name: One sample Student's t-test
+
+Data requirements [one, two, or more samples, data type (numeric, ordinal, or categorical), data distribution (Normal, symmetric, non-parametric, etc.), sample size?]:
+
+Formulas for the statistic(s), and p-value, if relevant:
+
+Interpretation (Is there a null hypothesis? Associated confidence interval?) : 
+
+#### 5. Procedure name: bootstrap test for the value of the mean
+
+Data requirements [one, two, or more samples, data type (numeric, ordinal, or categorical), data distribution (Normal, symmetric, non-parametric, etc.), sample size?]:
+
+Formulas for the statistic(s), and p-value, if relevant:
+
+Interpretation (Is there a null hypothesis? Associated confidence interval?) :
+
+
+
+#### 6. Applications
+In R, apply each of the methods from questions 2-5 to each of the data vectors v1, v2, and v3 loaded below, using the null hypothesis $\mu_0=0$, and $\sigma=1$ if necessary. Report the p-value, and a confidence interval for the mean, if readily available. State whether or not the method is appropriate for the data.
+
+
+```{r}
+load("midterm_data.RData")
+
+```
+
+
+  + 6.a. One Sample z-test
+```{r} 
+#Data Vector V1:
+#Data Vector V2:
+#Data Vector V3:
+``` 
+  + 6.b. Wilcoxon signed rank test
+```{r}
+```
+
+  + 6.c. Student's t-test
+```{r}
+#Data Vector V1:
+#Data Vector V2:
+#Data Vector v3:
+```
+
+  + 6.d. bootstrap test for the value of the mean
+```{r}
+```
+
+
+
+
+
+
+
+
