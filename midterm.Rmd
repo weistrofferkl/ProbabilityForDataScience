@@ -77,35 +77,222 @@ In R, apply each of the methods from questions 2-5 to each of the data vectors v
 
 ```{r}
 load("midterm_data.RData")
+#Use QQ-Plots to check for normality:
+
+#Not Normal
+qqnorm(v1)
+qqline(v1)
+
+#Normal
+qqnorm(v2)
+qqline(v2)
+
+#Eh, Vaguely normal
+qqnorm(v3)
+qqline(v3)
+
+
+framev1 <- data.frame(v1)
+framev2 <- data.frame(v2)
+framev3 <- data.frame(v3)
+
+gV1 <- ggplot(framev1)+geom_histogram(aes(x = v1, y = ..density..))+
+  stat_function(fun = dnorm, n = length(v1), args = list(mean = mean(v1), sd = sd(v1)), color = "red")
+gV1
+
+gV2 <- ggplot(framev2)+geom_histogram(aes(x = v2, y = ..density..))+
+  stat_function(fun = dnorm, n = length(v2), args = list(mean = mean(v2), sd = sd(v2)), color = "red")
+gV2
+
+gV3 <- ggplot(framev3)+geom_histogram(aes(x = v3, y = ..density..))+
+  stat_function(fun = dnorm, n = length(v3), args = list(mean = mean(v3), sd = sd(v3)), color = "red")
+gV3
+
 
 ```
 
 
-  + 6.a. One Sample z-test
+  + 6.a. One Sample z-test:
 ```{r} 
 #Data Vector V1:
-#Data Vector V2:
-#Data Vector V3:
-``` 
-  + 6.b. Wilcoxon signed rank test
-```{r}
-```
+nVec1 = nrow(v1)
+sampleSigma = 1
+SEMeanV1 = sampleSigma/sqrt(nVec1)
+EV1 = qnorm(.975)*SEMeanV1; #Margin of Error
+xbarV1 = mean(v1)
+cat("Mean V1: ",xbarV1, "\n")
+cat("Confidence Interval V1: ", xbarV1 + c(-EV1, EV1), "\n")
 
-  + 6.c. Student's t-test
+#Is m = 0?
+zV1 <- (xbarV1-0)/SEMeanV1
+pV1 <- 2*pnorm(-abs(zV1))
+cat("P-Value for V1: ", pV1, "\n\n")
+
+library(TeachingDemos)
+z.test(v1, sd = sampleSigma)
+
+#Data Vector V2:
+nVec2 = length(v2)
+SEMeanV2 = sampleSigma/sqrt(nVec2)
+EV2 = qnorm(.975)*SEMeanV2 #Margin of Error
+xbarV2 = mean(v2)
+cat("\nMean V2: ",xbarV2, "\n")
+cat("Confidence Interval V2: ", xbarV2 + c(-EV2, EV2), "\n")
+zV2 <- (xbarV2-0)/SEMeanV2
+pV2 <- 2*pnorm(-abs(zV2))
+cat("P-Value for V2: ", pV2, "\n\n")
+
+z.test(v2, sd = sampleSigma)
+
+
+#Data Vector V3:
+nVec3 = nrow(v3)
+SEMeanV3 = sampleSigma/sqrt(nVec3)
+EV3 = qnorm(.975)*SEMeanV3 #Margin of Error
+xbarV3 = mean(v3)
+cat("\nMean V3: ",xbarV3, "\n")
+cat("Confidence Interval V3: ", xbarV3 + c(-EV3, EV3), "\n")
+zV3 <- (xbarV3-0)/SEMeanV3
+pV3 <- 2*pnorm(-abs(zV3))
+cat("P-Value for V3: ", pV3, "\n\n")
+z.test(v3, sd = sampleSigma)
+
+``` 
+#Response to 6.A:
+Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for V1 and V3, as the p-values for this test were less than or equal to 0.05 for the V1 and V3 datasets.For V2, the p-value for this test was greater than .05, as such we cannot reject the null hypothesis based on this particular test. Given that the Z-Test expects the data to follow a normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets.Given thier qqplots,it appears that V2 vaguely follows a normal distibution and would be a better fit for the Z-test than V1 and V3. However,this test is not a good fit for V1 and V3(which does not follow a normal distribution).
+
+
+  + 6.b. Wilcoxon signed rank test TO DO: IS THIS A GOOD TEST??
+```{r}
+
+#Data Vector V1:
+#summary(v1)
+
+yV1 <- v1-median(v1)
+yrankV1 <- rank(abs(yV1))
+cat("Value of V for V1: ",sum(yrankV1[yV1>0]),"\n")
+wilcox.test(v1, mu = median(v1))
+
+#Data Vector V2 (does look normal):
+#summary(v2)
+
+yV2 <- v2-median(v2)
+yrankV2 <- rank(abs(yV2))
+cat("\n\nValue of V for V2: ",sum(yrankV2[yV2>0]),"\n")
+wilcox.test(v2, mu = median(v2))
+
+#Data Vector V3:
+#summary(v3)
+yV3 <- v3-median(v3)
+yrankV3 <- rank(abs(yV3))
+cat("\n\nValue of V for V3: ",sum(yrankV3[yV3>0]),"\n")
+wilcox.test(v3, mu = median(v3))
+
+
+```
+#Response to 6.B:
+Based on the p-values returned for all three data vectors, we cannot reject the null hypothesis for the datasets as all three p-values were greater than or equal to 0.05.Given that the Wilcoxon Signed Mean Test expects the data to follow a non-normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets. Given their qqplots, V1 and V3 are not normally distributed and the Wilcoxon Signed Mean Test is a good fit for these datasets. Also, although the qqplot of the V2 dataset suggests that V2 follows a vaugely normal distribution, this particular test is still a good fit for the V2 data. 
+
+  + 6.c. Student's t-test TODO: Is this a good test?
 ```{r}
 #Data Vector V1:
+
+#Confidence Interval:
+nV1 <- nrow(v1)
+nullHypMean <- 0 #Using Null Hypothesis Mean
+sampleSDV1 <- sd(v1)
+sampleMeanV1 <- mean(v1)
+SEV1 = sampleSDV1/sqrt(nV1)
+EV1 = qt(.975, df = nV1-1)*SEV1
+cat("Confidence Interval for V1: ", sampleMeanV1+c(-EV1, EV1), "\n")
+
+#P-Value:
+tTestV1 <- (nullHypMean-sampleMeanV1)/SEV1
+cat("P-Value for V1: ", 2*pt(tTestV1,nV1-1), "\n\n")
+t.test(v1, mu = nullHypMean, conf.level = 0.95)
+
+
 #Data Vector V2:
+
+#Confidence Interval:
+nV2 <- length(v2)
+sampleSDV2 <- sd(v2)
+sampleMeanV2 <- mean(v2)
+SEV2 = sampleSDV2/sqrt(nV2)
+EV2 = qt(.975, df = nV2-1)*SEV2
+cat("\nConfidence Interval for V2: ", sampleMeanV2+c(-EV2, EV2), "\n")
+
+#P-Value:
+tTestV2 <- (nullHypMean-sampleMeanV2)/SEV2
+cat("P-Value for V2: ", 2*pt(tTestV2,nV2-1), "\n\n")
+t.test(v2, mu = nullHypMean, conf.level = 0.95)
+
 #Data Vector v3:
-```
 
-  + 6.d. bootstrap test for the value of the mean
+#Confidence Interval:
+nV3 <- nrow(v3)
+sampleSDV3 <- sd(v3)
+sampleMeanV3 <- mean(v3)
+SEV3 = sampleSDV3/sqrt(nV3)
+EV3 = qt(.975, df = nV2-1)*SEV3
+cat("\nConfidence Interval for V3: ", sampleMeanV3+c(-EV3, EV3), "\n")
+
+#P-Value:
+tTestV3 <- (nullHypMean-sampleMeanV3)/SEV3
+cat("P-Value for V3: ", 2*pt(tTestV3,nV3-1), "\n\n")
+t.test(v3, mu = nullHypMean, conf.level = 0.95)
+```
+#Response to 6.C:
+Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for all datasets, as the p-values returend for this test were less than or equal to 0.05. Given that the T-Test expects the data to follow a normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets. Based on their qqplots,it appears that V2 vaguely follows a normal distibution and would be a better fit for the T-test than V1 and V3. However, the book mentions that T-tests are typically better for datasets of a size 30. Based on the results of the tests and the distributions and sizes of the data sets, I do not believe that the T-test is a good fit for any of the three provided data vectors.
+
+  + 6.d. bootstrap test for the value of the mean #To Do: Is this a good test?
 ```{r}
+nSamples <- 10000
+grabMeans <- function(x){
+  sampleMean <- mean(x)
+  return (sampleMean)
+  
+}
+
+#Data Vector V1:
+listSamplesV1 <- lapply(1:nSamples, function(x) sample(v1, size = nrow(v1), replace = TRUE))
+meanListV1 <- sapply(listSamplesV1, grabMeans)
+
+#Used to ensure normality:
+#qqnorm(meanListV1)
+#qqline(meanListV1)
+
+cat("Bootstrapped interval V1: ", quantile(meanListV1, c(0.025, 0.975)), "\n")
+cat("Sample mean of the list of V1 means: ", mean(meanListV1), "\n")
+cat("Sample mean of V1: ", mean(v1), "\n\n")
+
+#Data Vector V2:
+listSamplesV2 <- lapply(1:nSamples, function(x) sample(v2, size = length(v2), replace = TRUE))
+meanListV2 <- sapply(listSamplesV2, grabMeans)
+
+#qqnorm(meanListV2)
+#qqline(meanListV2)
+
+cat("Bootstrapped interval V2: ", quantile(meanListV2, c(0.025, 0.975)), "\n")
+cat("Sample mean of the list of V2 means: ", mean(meanListV2), "\n")
+cat("Sample mean of V2: ", mean(v2), "\n\n")
+
+
+#Data Vector V3:
+listSamplesV3 <- lapply(1:nSamples, function(x) sample(v3, size = nrow(v3), replace = TRUE))
+meanListV3 <- sapply(listSamplesV3, grabMeans)
+
+#qqnorm(meanListV3)
+#qqline(meanListV3)
+
+cat("Bootstrapped interval V3: ", quantile(meanListV3, c(0.025, 0.975)), "\n")
+cat("Sample mean of the list of V3 means: ", mean(meanListV3), "\n")
+cat("Sample mean of V3: ", mean(v3), "\n\n")
+
+
 ```
-
-
-
-
-
+#Response to 6.D:
+Based on the intervals returned for all three data vectors, the Bootstrapped Interval for the Means appears to be a good test for the mean of all three datasets.
 
 
 

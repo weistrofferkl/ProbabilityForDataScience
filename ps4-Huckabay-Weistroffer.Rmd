@@ -156,7 +156,7 @@ g <- ggplot(frame2017)+geom_histogram(aes(x = dat.2017$year.total, y = ..density
   stat_function(fun = dnorm, n = length(dat.2017), args = list(mean = mean, sd = sd), color = "red")
 g
 
-#Draw 10,000 samples of size 19 from annual precipitation values in 2000-2017
+#Draw 10,000 samples of size 18 from annual precipitation values in 2000-2017
 nSamples <- 10000
 listSamples <- lapply(1:nSamples, function(x) sample(dat.2017$year.total, size = 18, replace = TRUE))
 
