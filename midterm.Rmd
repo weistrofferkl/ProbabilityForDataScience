@@ -3,11 +3,17 @@ title: "Midterm 2018"
 author: "C. Durso"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  word_document: default
-  html_document: default
   pdf_document: default
+  html_document: default
+  word_document: default
 ---
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(stringr)
+library(MASS)
+```
 Name_____________________________________
 
 ## Midterm Exam, COMP 4441, 3441: Probability and Statistics for Data Science
@@ -159,16 +165,19 @@ z.test(v3, sd = sampleSigma)
 
 ``` 
 #Response to 6.A:
-Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for V1 and V3, as the p-values for this test were less than or equal to 0.05 for the V1 and V3 datasets.For V2, the p-value for this test was greater than .05, as such we cannot reject the null hypothesis based on this particular test. Given that the Z-Test expects the data to follow a normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets.Given thier qqplots,it appears that V2 vaguely follows a normal distibution and would be a better fit for the Z-test than V1 and V3. However,this test is not a good fit for V1 and V3(which does not follow a normal distribution).
+Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for V1 and V3, as the p-values for this test were less than or equal to 0.05 for the V1 and V3 datasets.For V2, the p-value for this test was greater than .05, as such we cannot reject the null hypothesis based on this particular test. 
+
+Given that the Z-Test expects the data to follow a normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets.Based on their qqplots, V2 appears to follows a normal distibution, V3 vaguely follows a normal distribution, and V1 does not follow a normal distribution. Given this, the one-sample Z-Test is a good statistical test for data vector V2, and has potential to be a good statistical test for data vector V3 (although there may be an alternative statistical test that would better fit V3). However, the one-sample Z-Test is not a good statistical test for data vector V1 based on the distribution of the data.
 
 
-  + 6.b. Wilcoxon signed rank test TO DO: IS THIS A GOOD TEST??
+  + 6.b. Wilcoxon signed rank test
 ```{r}
 
 #Data Vector V1:
 #summary(v1)
 
 yV1 <- v1-median(v1)
+#cat("True Median of V1: ", median(v1), "\n")
 yrankV1 <- rank(abs(yV1))
 cat("Value of V for V1: ",sum(yrankV1[yV1>0]),"\n")
 wilcox.test(v1, mu = median(v1))
@@ -178,6 +187,7 @@ wilcox.test(v1, mu = median(v1))
 
 yV2 <- v2-median(v2)
 yrankV2 <- rank(abs(yV2))
+#cat("True Median of V2: ", median(v2), "\n")
 cat("\n\nValue of V for V2: ",sum(yrankV2[yV2>0]),"\n")
 wilcox.test(v2, mu = median(v2))
 
@@ -185,13 +195,16 @@ wilcox.test(v2, mu = median(v2))
 #summary(v3)
 yV3 <- v3-median(v3)
 yrankV3 <- rank(abs(yV3))
+#cat("True Median of V3: ", median(v3), "\n")
 cat("\n\nValue of V for V3: ",sum(yrankV3[yV3>0]),"\n")
 wilcox.test(v3, mu = median(v3))
 
 
 ```
 #Response to 6.B:
-Based on the p-values returned for all three data vectors, we cannot reject the null hypothesis for the datasets as all three p-values were greater than or equal to 0.05.Given that the Wilcoxon Signed Mean Test expects the data to follow a non-normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets. Given their qqplots, V1 and V3 are not normally distributed and the Wilcoxon Signed Mean Test is a good fit for these datasets. Also, although the qqplot of the V2 dataset suggests that V2 follows a vaugely normal distribution, this particular test is still a good fit for the V2 data. 
+Based on the p-values returned for all three data vectors, we cannot reject the null hypothesis for the there datasets as all three p-values were greater than or equal to 0.05. Given that the Wilcoxon Signed Mean Test expects that the given data will follow a non-normal distribution, whether or not this statistical test is a good fit for the given data will depend on the normality of the datasets. 
+
+Based on the qqplots discussed in 6.A, the Wilcoxon Signed Rank Test is a good statistical test for the data vector V1, and has potential to be a good statistical test for data vector V3 (although there may be an alternative statistical test that would better fit V3). However, the Wilcoxon Signed Rank Test is not a good statistical test for data vector V2 based on the normal distribution of the data.
 
   + 6.c. Student's t-test TODO: Is this a good test?
 ```{r}
@@ -243,7 +256,9 @@ cat("P-Value for V3: ", 2*pt(tTestV3,nV3-1), "\n\n")
 t.test(v3, mu = nullHypMean, conf.level = 0.95)
 ```
 #Response to 6.C:
-Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for all datasets, as the p-values returend for this test were less than or equal to 0.05. Given that the T-Test expects the data to follow a normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets. Based on their qqplots,it appears that V2 vaguely follows a normal distibution and would be a better fit for the T-test than V1 and V3. However, the book mentions that T-tests are typically better for datasets of a size 30. Based on the results of the tests and the distributions and sizes of the data sets, I do not believe that the T-test is a good fit for any of the three provided data vectors.
+Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for all datasets, as the p-values returned from this test were less than or equal to 0.05.
+
+Based on the qqplots discussed in 6.A, and given that the T-Test expects the data to follow a normal distribution, this statistical test is a good fit for data vector V2 and has potential to be a good statistical test for data vector V3 (although there may be an alternative statistical test that would better fit V3). However, the one-sample T-Test is not a good statistical test for data vector V1 based on the non-parametric distribution of the data.
 
   + 6.d. bootstrap test for the value of the mean #To Do: Is this a good test?
 ```{r}
@@ -292,7 +307,7 @@ cat("Sample mean of V3: ", mean(v3), "\n\n")
 
 ```
 #Response to 6.D:
-Based on the intervals returned for all three data vectors, the Bootstrapped Interval for the Means appears to be a good test for the mean of all three datasets.
+Based on the 95% bootstrapped mean intervals returned for all three data vectors, the Bootstrapped Interval for the Mean test appears to be a good test for the mean of all three datasets.
 
 
 
