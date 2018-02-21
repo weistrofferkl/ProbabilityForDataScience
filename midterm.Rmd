@@ -3,9 +3,9 @@ title: "Midterm 2018"
 author: "C. Durso"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
-  pdf_document: default
-  html_document: default
   word_document: default
+  html_document: default
+  pdf_document: default
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -80,9 +80,13 @@ Interpretation (Is there a null hypothesis? Associated confidence interval?) :
 #### 6. Applications
 In R, apply each of the methods from questions 2-5 to each of the data vectors v1, v2, and v3 loaded below, using the null hypothesis $\mu_0=0$, and $\sigma=1$ if necessary. Report the p-value, and a confidence interval for the mean, if readily available. State whether or not the method is appropriate for the data.
 
+#### Setup:
+
+THe following graphs/plots are used to assess normality and symmetry of the given data vectors:
 
 ```{r}
 load("midterm_data.RData")
+
 #Use QQ-Plots to check for normality:
 
 #Not Normal
@@ -97,22 +101,53 @@ qqline(v2)
 qqnorm(v3)
 qqline(v3)
 
+#Use density bar-charts to check for normality and symmetry:
 
 framev1 <- data.frame(v1)
 framev2 <- data.frame(v2)
 framev3 <- data.frame(v3)
 
+#Doesn't appear normal or symmetric
 gV1 <- ggplot(framev1)+geom_histogram(aes(x = v1, y = ..density..))+
   stat_function(fun = dnorm, n = length(v1), args = list(mean = mean(v1), sd = sd(v1)), color = "red")
 gV1
 
+#Could be normal, could be symmetric
 gV2 <- ggplot(framev2)+geom_histogram(aes(x = v2, y = ..density..))+
   stat_function(fun = dnorm, n = length(v2), args = list(mean = mean(v2), sd = sd(v2)), color = "red")
 gV2
 
+#Looks vaguely normal
 gV3 <- ggplot(framev3)+geom_histogram(aes(x = v3, y = ..density..))+
   stat_function(fun = dnorm, n = length(v3), args = list(mean = mean(v3), sd = sd(v3)), color = "red")
 gV3
+
+
+#Use box-plots for symmetry:
+
+#Not Symmetric
+g9 <- ggplot(framev1, aes(x="measurement", y = v1))+geom_boxplot()
+g9
+(median(v1))
+
+#Looks pretty symmetric
+g10 <- ggplot(framev2, aes(x="measurement", y = v2))+geom_boxplot()
+g10
+(median(v2))
+
+#Could be vaguley symmetric, there's an outlier that could be altering the distribution
+g11 <- ggplot(framev3, aes(x="measurement", y = v3))+geom_boxplot()
+g11
+(median(v3))
+
+v3<-(sort(v3))
+v4 <- v3[1:34]
+(sort(v4))
+
+#Removed outliers from v3, not symmetric
+framev4 <- data.frame(v4)
+g12 <- ggplot(framev4, aes(x="measurement", y = v4))+geom_boxplot()
+g12
 
 
 ```
@@ -152,7 +187,7 @@ z.test(v2, sd = sampleSigma)
 
 
 #Data Vector V3:
-nVec3 = nrow(v3)
+nVec3 = length(v3)
 SEMeanV3 = sampleSigma/sqrt(nVec3)
 EV3 = qnorm(.975)*SEMeanV3 #Margin of Error
 xbarV3 = mean(v3)
@@ -165,7 +200,7 @@ z.test(v3, sd = sampleSigma)
 
 ``` 
 #Response to 6.A:
-Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for V1 and V3, as the p-values for this test were less than or equal to 0.05 for the V1 and V3 datasets.For V2, the p-value for this test was greater than .05, as such we cannot reject the null hypothesis based on this particular test. 
+Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for V1 and V3, as the p-values for this test were less than or equal to the alpha value of 0.05 for the V1 and V3 datasets.For V2, the p-value for this test was greater than the alpha value, as such we cannot reject the null hypothesis based on this particular test. 
 
 Given that the Z-Test expects the data to follow a normal distribution, I plotted each vector using qqnorm/qqline to check for normality of the data sets.Based on their qqplots, V2 appears to follows a normal distibution, V3 vaguely follows a normal distribution, and V1 does not follow a normal distribution. Given this, the one-sample Z-Test is a good statistical test for data vector V2, and has potential to be a good statistical test for data vector V3 (although there may be an alternative statistical test that would better fit V3). However, the one-sample Z-Test is not a good statistical test for data vector V1 based on the distribution of the data.
 
@@ -182,6 +217,11 @@ yrankV1 <- rank(abs(yV1))
 cat("Value of V for V1: ",sum(yrankV1[yV1>0]),"\n")
 wilcox.test(v1, mu = median(v1))
 
+v1Frame <- data.frame(v1)
+g9 <- ggplot(v1Frame, aes(x="measurement", y = v1))+geom_boxplot()
+g9
+
+
 #Data Vector V2 (does look normal):
 #summary(v2)
 
@@ -191,8 +231,12 @@ yrankV2 <- rank(abs(yV2))
 cat("\n\nValue of V for V2: ",sum(yrankV2[yV2>0]),"\n")
 wilcox.test(v2, mu = median(v2))
 
+v2Frame <- data.frame(v2)
+g10 <- ggplot(v2Frame, aes(x="measurement", y = v2))+geom_boxplot()
+g10
+
 #Data Vector V3:
-#summary(v3)
+summary(v3)
 yV3 <- v3-median(v3)
 yrankV3 <- rank(abs(yV3))
 #cat("True Median of V3: ", median(v3), "\n")
@@ -200,13 +244,15 @@ cat("\n\nValue of V for V3: ",sum(yrankV3[yV3>0]),"\n")
 wilcox.test(v3, mu = median(v3))
 
 
+
+
 ```
 #Response to 6.B:
-Based on the p-values returned for all three data vectors, we cannot reject the null hypothesis for the there datasets as all three p-values were greater than or equal to 0.05. Given that the Wilcoxon Signed Mean Test expects that the given data will follow a non-normal distribution, whether or not this statistical test is a good fit for the given data will depend on the normality of the datasets. 
+Based on the p-values returned for all three data vectors, we cannot reject the null hypothesis for the three datasets based on their p-values as all three p-values were greater than or equal to the alpha value of 0.05. Since the Wilcoxon Signed Mean Test's null hypothesis expects that the given data will be symmetrically distributed around a true mean in a symmetric population, whether or not this statistical test is a good fit for the given data will depend on the symmetry of the datasets. 
 
-Based on the qqplots discussed in 6.A, the Wilcoxon Signed Rank Test is a good statistical test for the data vector V1, and has potential to be a good statistical test for data vector V3 (although there may be an alternative statistical test that would better fit V3). However, the Wilcoxon Signed Rank Test is not a good statistical test for data vector V2 based on the normal distribution of the data.
+Given the boxplots in the setup step, the Wilcoxon Signed Rank Test is a good statistical test for the data vector V2. However since we know from the qqplot that V2 appears to be normal, it would make more sense to use an alternative statistical test for this specific data set. The Wilcoxon Signed Rank Test is not a good statistical test for data vectors V1 and V3 based on the lack of symmetry within the data sets.
 
-  + 6.c. Student's t-test TODO: Is this a good test?
+  + 6.c. Student's t-test 
 ```{r}
 #Data Vector V1:
 
@@ -243,7 +289,7 @@ t.test(v2, mu = nullHypMean, conf.level = 0.95)
 #Data Vector v3:
 
 #Confidence Interval:
-nV3 <- nrow(v3)
+nV3 <- length(v3)
 sampleSDV3 <- sd(v3)
 sampleMeanV3 <- mean(v3)
 SEV3 = sampleSDV3/sqrt(nV3)
@@ -256,7 +302,7 @@ cat("P-Value for V3: ", 2*pt(tTestV3,nV3-1), "\n\n")
 t.test(v3, mu = nullHypMean, conf.level = 0.95)
 ```
 #Response to 6.C:
-Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for all datasets, as the p-values returned from this test were less than or equal to 0.05.
+Based on the p-values returned for all three data vectors, we can reject the null hypothesis that the mean of the vectors is equal to zero for all datasets, as the p-values returned from this test were less than or equal to the alpha value of 0.05.
 
 Based on the qqplots discussed in 6.A, and given that the T-Test expects the data to follow a normal distribution, this statistical test is a good fit for data vector V2 and has potential to be a good statistical test for data vector V3 (although there may be an alternative statistical test that would better fit V3). However, the one-sample T-Test is not a good statistical test for data vector V1 based on the non-parametric distribution of the data.
 
@@ -270,43 +316,42 @@ grabMeans <- function(x){
 }
 
 #Data Vector V1:
-listSamplesV1 <- lapply(1:nSamples, function(x) sample(v1, size = nrow(v1), replace = TRUE))
+listSamplesV1 <- lapply(1:nSamples, function(x) sample(v1, size = length(v1), replace = TRUE))
 meanListV1 <- sapply(listSamplesV1, grabMeans)
 
-#Used to ensure normality:
-#qqnorm(meanListV1)
-#qqline(meanListV1)
+
 
 cat("Bootstrapped interval V1: ", quantile(meanListV1, c(0.025, 0.975)), "\n")
-cat("Sample mean of the list of V1 means: ", mean(meanListV1), "\n")
+cat("Sample mean of the bootstrapped sample: ", mean(meanListV1), "\n")
 cat("Sample mean of V1: ", mean(v1), "\n\n")
 
 #Data Vector V2:
 listSamplesV2 <- lapply(1:nSamples, function(x) sample(v2, size = length(v2), replace = TRUE))
 meanListV2 <- sapply(listSamplesV2, grabMeans)
 
-#qqnorm(meanListV2)
-#qqline(meanListV2)
+
 
 cat("Bootstrapped interval V2: ", quantile(meanListV2, c(0.025, 0.975)), "\n")
-cat("Sample mean of the list of V2 means: ", mean(meanListV2), "\n")
+cat("Sample mean of the bootstrapped sample: ", mean(meanListV2), "\n")
 cat("Sample mean of V2: ", mean(v2), "\n\n")
 
 
 #Data Vector V3:
-listSamplesV3 <- lapply(1:nSamples, function(x) sample(v3, size = nrow(v3), replace = TRUE))
+listSamplesV3 <- lapply(1:nSamples, function(x) sample(v3, size = length(v3), replace = TRUE))
 meanListV3 <- sapply(listSamplesV3, grabMeans)
 
-#qqnorm(meanListV3)
-#qqline(meanListV3)
+
 
 cat("Bootstrapped interval V3: ", quantile(meanListV3, c(0.025, 0.975)), "\n")
-cat("Sample mean of the list of V3 means: ", mean(meanListV3), "\n")
+cat("Sample mean of the bootstrapped sample: ", mean(meanListV3), "\n")
 cat("Sample mean of V3: ", mean(v3), "\n\n")
 
 
 ```
 #Response to 6.D:
+
+Since the bootstrapped approach to estimating the mean does not rely on the input data following a specific distribution, this is a reasonable approach for estimating the mean for each data vector.
+
 Based on the 95% bootstrapped mean intervals returned for all three data vectors, the Bootstrapped Interval for the Mean test appears to be a good test for the mean of all three datasets.
 
 

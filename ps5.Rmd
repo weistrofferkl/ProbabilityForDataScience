@@ -1,0 +1,89 @@
+---
+title: "Problem Set 5"
+author: "cdurso"
+date: "Thursday, January 21, 2016"
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+These questions were rendered in R markdown through RStudio (<https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>, <http://rmarkdown.rstudio.com> ).
+
+Please complete the following tasks, in R where applicable. Please generate a solution document in R markdown and upload the rendered .doc, .docx, or .pdf document.  You may add hand computations to a .doc or .docx if you prefer. In the rendered document, please show your code. That is, don't use "echo=FALSE".  
+
+In either case, your work should be based  on the data's being in the same folder as the R files. Please turn in your work on Canvas. Your solution document should have your answers to the questions and should display the requested plots.
+
+ 1. Let $Y$ be the random variable $X^{2}$ where $X$ has a standard Normal distribution $N(0,1)$. Calculate the mean of $Y$. You may use what you know about the mean and variance of $X$. (10 points)
+
+The variance of $X$ equals $E[X^2]-E[X]^2$. Given that $Var[X]=1$ and $E[X]=0$, conclude $E[Y]=E[X^2]=1$.
+
+
+ 2. Returning to the data from "precipitation_boulder.csv", the file "precipitation.RData" contains the data.frame dat.trim created from the code in ps4, followed by the command 
+
+save(dat.trim,file="precipitation.RData")
+
+The command
+
+load("precipitation.RData")
+
+imports dat.trim directly into the current environment.
+
+  * 2.a. Are the annual precipitation totals in 1900-1915 approximately Normally distributed? Are the annual precipitation totals in 2000-2010 approximately Normally distributed? Please provide visual support for your conclusions. (10 points)
+  
+```{r}
+library(tidyverse)
+load("precipitation.RData")
+
+#retrieve the 1900-1915 years
+dat.1915<-filter(dat.trim, dat.trim$year <= 1915)
+dat.1915<-filter(dat.1915, dat.1915$year >= 1900)
+
+#retrieve the 2000-2010
+dat.2010<-filter(dat.trim, dat.trim$year <= 2010)
+dat.2010<-filter(dat.2010, dat.2010$year >= 2000)
+
+qqnorm(dat.1915$year.total)
+qqline(dat.1915$year.total)
+
+qqnorm(dat.2010$year.total)
+qqline(dat.2010$year.total)
+
+
+
+```
+
+  * 2.b. Perform Welch's t test to test the hypothesis that the annual precipitation totals in 1900-1915 and the annual precipitation totals in 2000-2010 are drawn from populations with equal means. Please comment on the applicability of the test, based on your observations in 2.a. (5 points)
+  
+```{r}
+
+t.test(dat.1915$year.total,dat.2010$year.total)
+
+```
+
+  * 2.c. Are the variances of the annual precipitation totals in 1900-1915 and the annual precipitation totals in 2000-2015 approximately equal? (5 points)
+  
+```{r}
+
+#The question asks for 2000-2015 rather than 2000-2010, something to clarify with Cathy
+(var(dat.1915$year.total))
+(var(dat.2010$year.total))
+```
+
+
+
+  * 2.d. Test whether the April precipitation in the years 2000-2010 may reasonably be viewed as coming from a population with same mean as the corresponding June precipitation. (10 points)
+
+```{r}
+
+
+
+```
+
+ 3. Please describe your project. If you are explaining a method not covered in class, what is the method? If you are addressing a question on a new data set, what is the data set? If you are working in a team of two, who is your teammate? (10 points)
+
+
+
+
+
