@@ -67,8 +67,13 @@ t.test(dat.1915$year.total,dat.2010$year.total)
 ```{r}
 
 #The question asks for 2000-2015 rather than 2000-2010, something to clarify with Cathy
+#Is it really this easy?
+
 (var(dat.1915$year.total))
+(mean(dat.1915$year.total))
+
 (var(dat.2010$year.total))
+(mean(dat.2010$year.total))
 ```
 
 
@@ -76,6 +81,16 @@ t.test(dat.1915$year.total,dat.2010$year.total)
   * 2.d. Test whether the April precipitation in the years 2000-2010 may reasonably be viewed as coming from a population with same mean as the corresponding June precipitation. (10 points)
 
 ```{r}
+
+aprilPrecip <- dat.2010$apr
+junePrecip <- dat.2010$jun
+
+aFrame <- data.frame(aprilPrecip)
+jFrame <- data.frame(junePrecip)
+
+g1 <- ggplot(aFrame, aes(x=dat.2010$year, y = aprilPrecip)) +geom_point(color="red")
+g2 <- g1+geom_point(data = jFrame, aes(x=dat.2010$year, y = junePrecip))
+g2 
 
 
 
