@@ -25,10 +25,10 @@ In either case, your work should be based  on the data's being in the same folde
   
 ```{r}
 schoolDat <-read.csv("school_goals.csv")
-schoolDat
+#schoolDat
 goalLoc <- data.frame(schoolDat)
-goalLoc <- goalLoc[,c("Goals", "Urban.Rural")]
-as.data.frame(table(goalLoc))
+goalLoc <- table(goalLoc[,c("Goals", "Urban.Rural")])
+as.data.frame(goalLoc)
 
 #Table of Proportions for each Goal for each type of location:
 totR <- sum(schoolDat$Urban.Rural == "Rural")
@@ -84,6 +84,8 @@ pTableU$Urban_Grades <-UGrades
   * 2.b. Are the students' goal (Goal) independent of the the students' Urban, Suburban or Rural status?  Please do a $\chi^2$  test to check this. (10 points)
   
 ```{r}
+goalLoc
+chisq.test(goalLoc)
 
 ```
   
