@@ -1,0 +1,95 @@
+---
+title: "Problem Set 6"
+author: "cdurso"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+These questions were rendered in R markdown through RStudio (<https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>, <http://rmarkdown.rstudio.com> ).
+
+Please complete the following tasks, in R where applicable. Please generate a solution document in R markdown and upload the rendered .doc, .docx, or .pdf document.  You may add hand computations to a .doc or .docx if you prefer. In the rendered document, please show your code. That is, don't use "echo=FALSE".  
+
+In either case, your work should be based  on the data's being in the same folder as the R files. Please turn in your work on Canvas. Your solution document should have your answers to the questions and should display the requested plots.
+
+ 1.a Let $X$ and $Y$ be independent random variables with $\chi^2$ distributions with $n$ and $m$ degrees of freedom respectively. What is the distribution of $X+Y$?. (10 points)
+
+1.b. Let $X$ and $Y$ be independent random variables with $\chi^2$ distributions with $n$ and $m$ degrees of freedom respectively. What is the distribution of $X/Y$?.(10 points)
+
+2. The data in "school_goals.csv" come from http://lib.stat.cmu.edu/DASL/Stories/Students'Goals.html Students in grades 4-6 in selected schools in Michigan were asked the following question: What would you most like to do at school? a)  make good grades, b) be good at sports, c) be popular. The results are recorded in "Goals". Demographic information about the students was also collected. 
+
+  * 2.a. Please display a table of totals for each Goal for each type of location (Urban.Rural), and a table of proportions for each Goal for each type of location. (10 points)
+  
+```{r}
+schoolDat <-read.csv("school_goals.csv")
+schoolDat
+goalLoc <- data.frame(schoolDat)
+goalLoc <- goalLoc[,c("Goals", "Urban.Rural")]
+as.data.frame(table(goalLoc))
+
+#Table of Proportions for each Goal for each type of location:
+totR <- sum(schoolDat$Urban.Rural == "Rural")
+RGrades <- sum(schoolDat$Urban.Rural == "Rural" & schoolDat$Goals == "Grades")
+RGrades<-RGrades/totR
+RSports <- sum(schoolDat$Urban.Rural == "Rural" & schoolDat$Goals == "Sports")
+RSports <- RSports/totR
+RPop <- sum(schoolDat$Urban.Rural == "Rural" & schoolDat$Goals == "Popular")
+RPop <-RPop/totR
+
+totS <- sum(schoolDat$Urban.Rural == "Suburban")
+SGrades <- sum(schoolDat$Urban.Rural == "Suburban" & schoolDat$Goals == "Grades")
+SGrades <- SGrades/totS
+SSports <- sum(schoolDat$Urban.Rural == "Suburban" & schoolDat$Goals == "Sports")
+SSports <- SSports/totS
+SPop <- sum(schoolDat$Urban.Rural == "Suburban" & schoolDat$Goals == "Popular")
+SPop <- SPop/totS
+
+totU <- sum(schoolDat$Urban.Rural == "Urban")
+UGrades <- sum(schoolDat$Urban.Rural == "Urban" & schoolDat$Goals == "Grades")
+UGrades <- UGrades/totU
+USports <- sum(schoolDat$Urban.Rural == "Urban" & schoolDat$Goals == "Sports")
+USports <- USports/totU
+UPop <- sum(schoolDat$Urban.Rural == "Urban" & schoolDat$Goals == "Popular")
+UPop <- UPop/totU
+
+#TO DO:
+#Put this in a table
+pTableR <- NA
+pTableR["Rural_Sports"]["Rural_Pop"]["Rural_Grades"]
+pTableR$Rural_Sports <- RSports
+pTableR$Rural_Pop <-RPop
+pTableR$Rural_Grades <-RGrades
+(data.frame(pTableR[2:4]))
+
+pTableS <- NA
+pTableS["Suburban_Sports"]["Suburban_Pop"]["Suburban_Grades"]
+pTableS$Suburban_Sports <- SSports
+pTableS$Surburban_Pop <-SPop
+pTableS$Surburban_Grades <-SGrades
+(data.frame(pTableS[2:4]))
+
+
+pTableU <- NA
+pTableU["Urban_Sports"]["Urban_Pop"]["Urban_Grades"]
+pTableU$Urban_Sports <- USports
+pTableU$Urban_Pop <-UPop
+pTableU$Urban_Grades <-UGrades
+(data.frame(pTableU[2:4]))
+
+```
+  
+  * 2.b. Are the students' goal (Goal) independent of the the students' Urban, Suburban or Rural status?  Please do a $\chi^2$  test to check this. (10 points)
+  
+```{r}
+
+```
+  
+  * 2.c. Please do a $\chi^2$  test and a Fisher's Exact Test to determine if the goals are independent of Gender, and compare the results (10 points)
+  
+```{r}
+
+```
+
