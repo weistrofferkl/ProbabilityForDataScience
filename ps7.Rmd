@@ -1,0 +1,53 @@
+---
+title: "Problem Set 7"
+author: "cdurso"
+date: '`r format(Sys.time(), "%B %d, %Y")`'
+output:
+  pdf_document: default
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+These questions were rendered in R markdown through RStudio (<https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>, <http://rmarkdown.rstudio.com> ).
+
+Please complete the following tasks, in R where applicable. Please generate a solution document in R markdown and upload the rendered .doc, .docx, or .pdf document.  You may add hand computations to a .doc or .docx if you prefer. In the rendered document, please show your code. That is, don't use "echo=FALSE". 
+
+In either case, your work should be based  on the data's being in the same folder as the R files. Please turn in your work on Canvas. Your solution document should have your answers to the questions and should display the requested plots.
+
+1. Suppose the $Y_i=mX_i+b+\varepsilon_i$ where the $\varepsilon_i$'s are independent, identically distributed $Normal\left(0,\sigma^2\right)$ random variables. Define $M$ and $B$ as in the notes. What is the expected value of $Y_i-\left(X_iM+B\right)$ ?(10 points)
+
+
+2.	(1 point each) In the following, please use the"ads.txt"data, obtained from http://lib.stat.cmu.edu/DASL/Datafiles/tvadsdat.html then reformatted to load correctly using "read.table" with the option "header=TRUE". The data description follows: "This data appeared in the Wall Street Journal. The advertisement were selected by an annual survey conducted by Video Board Tests, Inc., a New York ad-testing company, based on interviews with 20,000 adults who were asked to name the most outstanding TV commercial they had seen, noticed, and liked. The retained impressions were based on a survey of 4,000 adults, in which regular product users were asked to cite a commercial they had seen for that product category in the past week.
+
+FIRM: Firm name 
+
+SPEND: TV advertising budget, 1983 ($ millions)
+
+MILIMP: Millions of retained impressions per week"
+
+
+  - 2.a.	Use maximum likelihood regression to model MILIMP as a linear function of SPEND. Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points)
+  
+```{r}
+
+```
+
+  - 2.b.	Use maximum likelihood regression to model  log(MILIMP) as a linear function of log(SPEND). Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points) 
+
+```{r}
+
+```
+
+ 
+
+  - 2.c Which of the two regressions above looks like a better fit to the data? (5 points)
+  
+  
+  - 2.d For the model you chose in 2.c, what is the predicted MILIMP for SPEND=75? (5 points)
+  
+```{r}
+
+```
+
+

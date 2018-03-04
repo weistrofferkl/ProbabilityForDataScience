@@ -87,11 +87,17 @@ pTableU$Urban_Grades <-UGrades
 goalLoc
 chisq.test(goalLoc)
 
+#teeny tiny p-value!
+
 ```
   
   * 2.c. Please do a $\chi^2$  test and a Fisher's Exact Test to determine if the goals are independent of Gender, and compare the results (10 points)
   
 ```{r}
+
+#To do: 
+#1. Separate table into gender, goal
+#2. Run tests
 
 ```
 
