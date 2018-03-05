@@ -26,16 +26,69 @@ SPEND: TV advertising budget, 1983 ($ millions)
 
 MILIMP: Millions of retained impressions per week"
 
+```{r}
+library(tidyverse)
+dataAds <- read.table("ads.txt", header = TRUE)
+dataAds
 
+```
   - 2.a.	Use maximum likelihood regression to model MILIMP as a linear function of SPEND. Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points)
   
 ```{r}
+g <- ggplot(data=dataAds, aes(x=dataAds$MILIMP, y = dataAds$SPEND))+geom_point()
+g
+
+milimp <- dataAds$MILIMP
+spend <- dataAds$SPEND
+
+n <- nrow(dataAds)
+n
+m <- (sum(milimp*spend)/n-mean(milimp)*mean(spend))/(sum((milimp)^2)/n-mean(milimp^2))
+b <- mean(spend)-m*mean(milimp)
+g1 <- g+geom_abline(slope = m, intercept = b)
+g1
+
+lm.milimp<-lm(spend~milimp)
+
+spendPredict <- m*milimp+b
+spendPredict
+predict(lm.milimp)
+lm.milimp$fitted
+
+#milimp "~ = is modeled as" linear function of spend
+lmfit <- lm(milimp~spend)
+lmfit
+summary(lmfit)
+plot(lmfit)
+
+
+#This link is a good: https://datascienceplus.com/correlation-and-linear-regression/
+
+#Is the relationship linear?
+  #Initially by looking at graphs 1 and 3 , it looks like this model 
+  #doesn't quite fit
+
+
+#Is the assumption of independent, identically dist. normal errors justifiable?
 
 ```
 
   - 2.b.	Use maximum likelihood regression to model  log(MILIMP) as a linear function of log(SPEND). Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points) 
 
 ```{r}
+logM <- log(milimp)
+logS <- log(spend)
+
+LogLmFit <- lm(logM~logS)
+LogLmFit
+summary(LogLmFit)
+plot(LogLmFit)
+
+#Is the relationship linear?
+  #Initially by looking at graphs 1 and 3 , it looks like this model fits
+
+
+#Is the assumption of independent, identically dist. normal errors justifiable?
 
 ```
 
