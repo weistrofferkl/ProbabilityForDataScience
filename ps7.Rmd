@@ -29,31 +29,12 @@ MILIMP: Millions of retained impressions per week"
 ```{r}
 library(tidyverse)
 dataAds <- read.table("ads.txt", header = TRUE)
-dataAds
+#dataAds
 
 ```
   - 2.a.	Use maximum likelihood regression to model MILIMP as a linear function of SPEND. Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points)
   
 ```{r}
-g <- ggplot(data=dataAds, aes(x=dataAds$MILIMP, y = dataAds$SPEND))+geom_point()
-g
-
-milimp <- dataAds$MILIMP
-spend <- dataAds$SPEND
-
-n <- nrow(dataAds)
-n
-m <- (sum(milimp*spend)/n-mean(milimp)*mean(spend))/(sum((milimp)^2)/n-mean(milimp^2))
-b <- mean(spend)-m*mean(milimp)
-g1 <- g+geom_abline(slope = m, intercept = b)
-g1
-
-lm.milimp<-lm(spend~milimp)
-
-spendPredict <- m*milimp+b
-spendPredict
-predict(lm.milimp)
-lm.milimp$fitted
 
 #milimp "~ = is modeled as" linear function of spend
 lmfit <- lm(milimp~spend)
@@ -68,8 +49,16 @@ plot(lmfit)
   #Initially by looking at graphs 1 and 3 , it looks like this model 
   #doesn't quite fit
 
+  #No obvious shape for G1 so it is linear
+
+  #Plot1: y = mx+b +epsillon 
+ # y - mx+b ~N(0,sig^2)
+
+  #qqplot of standardized residuals
 
 #Is the assumption of independent, identically dist. normal errors justifiable?
+  #is plot 1 a fan, a funnel? if so then its not Identically Distributed .
+  #if it is a curve, then it is not independent (a specific case be handled by a transformation as in 2B)
 
 ```
 
@@ -95,7 +84,7 @@ plot(LogLmFit)
  
 
   - 2.c Which of the two regressions above looks like a better fit to the data? (5 points)
-  
+  -r square for the second one makes more sense
   
   - 2.d For the model you chose in 2.c, what is the predicted MILIMP for SPEND=75? (5 points)
   
