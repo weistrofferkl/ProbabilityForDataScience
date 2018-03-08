@@ -17,6 +17,8 @@ In either case, your work should be based  on the data's being in the same folde
 
 1. Suppose the $Y_i=mX_i+b+\varepsilon_i$ where the $\varepsilon_i$'s are independent, identically distributed $Normal\left(0,\sigma^2\right)$ random variables. Define $M$ and $B$ as in the notes. What is the expected value of $Y_i-\left(X_iM+B\right)$ ?(10 points)
 
+##Response
+From the definitions, $Y_i-\left(X_iM+B\right)=mX_i+b+\varepsilon_i-\left(X_iM+B\right) = X_i(m-M) + (b-B) + \varepsilon_i$. For the expected value, we can think if it as $E[X_i(m-M) + (b-B)] + E[\varepsilon_i]=E[X_i(m-M)] + E[(b-B)] + 0$ since this is the mean of the identical distribution.Now, since each $X_i$ is constant, and $E[M]=m$ and $E[B] = b$, we have $X_i(E[M]-E[m])+E[b]-E[B]=X_i(m-m)+(b-b)=0$. 
 
 2.	(1 point each) In the following, please use the"ads.txt"data, obtained from http://lib.stat.cmu.edu/DASL/Datafiles/tvadsdat.html then reformatted to load correctly using "read.table" with the option "header=TRUE". The data description follows: "This data appeared in the Wall Street Journal. The advertisement were selected by an annual survey conducted by Video Board Tests, Inc., a New York ad-testing company, based on interviews with 20,000 adults who were asked to name the most outstanding TV commercial they had seen, noticed, and liked. The retained impressions were based on a survey of 4,000 adults, in which regular product users were asked to cite a commercial they had seen for that product category in the past week.
 
@@ -26,50 +28,31 @@ SPEND: TV advertising budget, 1983 ($ millions)
 
 MILIMP: Millions of retained impressions per week"
 
-```{r}
-library(tidyverse)
-dataAds <- read.table("ads.txt", header = TRUE)
-#dataAds
 
-```
   - 2.a.	Use maximum likelihood regression to model MILIMP as a linear function of SPEND. Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points)
   
 ```{r}
+
+library(tidyverse)
+dataAds <- read.table("ads.txt", header = TRUE)
+
 milimp <- dataAds$MILIMP
 spend <- dataAds$SPEND
 
 #milimp "~ = is modeled as" linear function of spend
+
 lmfit <- lm(milimp~spend)
 lmfit
 summary(lmfit)
+par(mfrow=c(2,2))
 plot(lmfit)
-
-#ggplot smooth, function = lm
-
-g <- ggplot(dataAds, aes(x = milimp, y=spend))+geom_point()+stat_smooth(method = "lm")
+g <- ggplot(lmfit, aes(x = milimp, y=spend))+geom_point()+stat_smooth(method = "lm")
 g
 
-g1 <- ggplot(lmfit, aes(x = milimp, y=spend))+geom_point(color = "red")+stat_smooth(method = "lm")
-g1
-
-#This link is a good: https://datascienceplus.com/correlation-and-linear-regression/
-
-#Is the relationship linear?
-  #Initially by looking at graphs 1 and 3 , it looks like this model 
-  #doesn't quite fit
-
-  #No obvious shape for G1 so it is linear
-
-  #Plot1: y = mx+b +epsillon 
- # y - mx+b ~N(0,sig^2)
-
-  #qqplot of standardized residuals
-
-#Is the assumption of independent, identically dist. normal errors justifiable?
-  #is plot 1 a fan, a funnel? if so then its not Identically Distributed .
-  #if it is a curve, then it is not independent (a specific case be handled by a transformation as in 2B)
-
 ```
+
+##Response
+The data independent, identically distributed Normal errors is justifiable; the data is not a fan nor a funnel nor a curve. It is The relationship is linear due to the lack of obvious shape. 
 
   - 2.b.	Use maximum likelihood regression to model  log(MILIMP) as a linear function of log(SPEND). Provide any diagnostic plots you feel are relevant. Is the relationship linear? Is the assumption of independent, identically distributed Normal errors justifiable? (15 points) 
 
@@ -80,27 +63,27 @@ logS <- log(spend)
 LogLmFit <- lm(logM~logS)
 LogLmFit
 summary(LogLmFit)
+par(mfrow=c(2,2))
 plot(LogLmFit)
 g <- ggplot(LogLmFit, aes(x = logM, y = logS))+geom_point()+stat_smooth(method = "lm")
 g
 
-#Is the relationship linear?
-  #Initially by looking at graphs 1 and 3 , it looks like this model fits
-
-
-#Is the assumption of independent, identically dist. normal errors justifiable?
-
 ```
 
- 
+##Response
+The data independent, identically distributed Normal errors is probably justifiable; the data is not a fan nor a funnel nor a curve. The relationship is linear, as evidenced by the Residuals vs. Fitted graph not having an obvious shape.
 
   - 2.c Which of the two regressions above looks like a better fit to the data? (5 points)
-  -r square for the second one makes more sense
+
+##Response
+The model in 2B appears to be a better fit, as the Multiple R-Squared value for the model in 2B is much higher than the Multiple R-Squared value for the model in 2A. 
   
   - 2.d For the model you chose in 2.c, what is the predicted MILIMP for SPEND=75? (5 points)
-  
-```{r}
 
+```{r}
+pred<-0.6135*log(75)+1.299
+pred<-exp(pred)
 ```
 
-
+##Response
+Using the slope of 0.6135 and intercept of 1.299, we would predict a value of `r pred` for SPEND=75.
